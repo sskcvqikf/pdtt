@@ -10,6 +10,9 @@ jobs:
     steps:
       - name: Clone repo
         uses: actions/checkout@v1
+      
+      - name: Install required packages
+        run: sudo apt install libncurses5-dev
         
       - name: Run make
         run: make
