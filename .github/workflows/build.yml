@@ -15,7 +15,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install libncurses-dev
         
       - name: Check if ncurses lib exists
-        run: ls -l /usr/lib/
+        run: ls -l /usr/lib/x86_64-linux-gnu
         
       - name: Run make
         run: make
