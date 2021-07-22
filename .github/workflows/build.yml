@@ -1,0 +1,21 @@
+name:  Build
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v1
+      
+      - name: Install required packages
+        run: sudo apt-get update && sudo apt-get install libncurses-dev
+        
+      - name: Check if ncurses lib exists
+        run: ls -l /usr/lib/x86_64-linux-gnu
+        
+      - name: Run make
+        run: make
