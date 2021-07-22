@@ -18,7 +18,7 @@ endif
 
 LIBS = -lncurses -lpanel
 
-CXXFLAGS = -std=c++17 -Wall -Werror -Wextra ${LIBS} ${MODE} -I${INCLUDE_DIR}
+CXXFLAGS = -std=c++17 -Wall -Werror -Wextra ${MODE} -I${INCLUDE_DIR}
 
 BUILD_DIR_GUARD = @mkdir -p $(BUILD_DIR)
 
