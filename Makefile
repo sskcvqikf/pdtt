@@ -7,5 +7,5 @@ $(BUILD_DIR)/%.cc.o: %.cc
 $(BUILD_DIR)/$(GOAL): $(OBJS)
 	$(CXX)  $(CXXFLAGS) -o $@ $^ $(LIBS)
 
-clear_obj:
+clean:
 	rm -r ${BUILD_DIR}
