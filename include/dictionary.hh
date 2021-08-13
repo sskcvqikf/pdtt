@@ -10,6 +10,7 @@
 #include <filesystem>
 #include <string_view>
 #include <random>
+#include <iostream>
 
 #include "config.hh"
 

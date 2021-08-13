@@ -3,14 +3,23 @@
 Dictionary::Dictionary()
 {
     namespace fs = std::filesystem;
-    for (const auto &fp: fs::directory_iterator(config::DICTIONARY_DIR)){
+    fs::directory_iterator directory;
+    try {
+        directory =  fs::directory_iterator(config::DICTIONARY_DIR);
+    }
+    catch (fs::filesystem_error &e)
+    {
+        std::cerr << "Cannot open directory with dictionaries. Exiting...\n";
+        exit(1);
+    }
+    for (const auto &fp: directory){
         if (fp.is_regular_file()) 
         {
             auto fn = fp.path().filename().native();
             std::ifstream fin(fp.path().c_str());
             if (!fin.is_open())
             {
-                // TODO
+                std::cerr << "Something wrong with opening '" << fn << "'. Exiting...\n";
             }
             auto loc = static_cast<unsigned long>(std::count(
                     std::istreambuf_iterator<char>(fin),
@@ -28,6 +37,11 @@ Dictionary::Dictionary()
             fin.close();
             store_[fn] = vw;
         }
+    }
+    if (store_.find("default.txt") == store_.end())
+    {
+        std::cerr << "You should put file called 'default.txt' in dictionary directory. Exiting...\n";
+        exit(1);
     }
 }
 
