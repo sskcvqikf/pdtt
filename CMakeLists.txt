@@ -5,6 +5,7 @@ project(pdtt)
 include(cmake/CompileOptions.cmake)
 include(cmake/Libraries.cmake)
 include(cmake/Sanitizers.cmake)
+include(cmake/Config.cmake)
 
 file(GLOB_RECURSE SRCS CONFIGURE_DEPENDS
     "src/*.cc"
@@ -18,6 +19,7 @@ add_executable(main
 target_include_directories(main PRIVATE
   include
   ${CURSES_INCLUDE_DIR}
+  ${PDARGS_INCLUDE_DIR}
 )
 
 target_link_libraries(main PRIVATE
