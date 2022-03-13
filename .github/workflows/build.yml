@@ -14,5 +14,5 @@ jobs:
       - name: Install required packages
         run: sudo apt-get update && sudo apt-get install libncurses-dev
         
-      - name: Run make
-        run: make
+      - name: Run Cmake
+        run: cmake -S. -Bbuild && cmake --build build/
