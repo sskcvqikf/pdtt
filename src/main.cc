@@ -1,9 +1,7 @@
-#include "pdtt.hh"
+#include "pdtt.h"
 
-auto main()
-    -> int
-{
-    PDTT pdtt;
-    pdtt.run();
-    return 0;
+auto main() -> int {
+  PDTT pdtt;
+  pdtt.run();
+  return 0;
 }
