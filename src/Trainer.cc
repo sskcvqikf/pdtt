@@ -8,6 +8,12 @@
 
 constexpr int kMaxLength = 50;
 
+bool IsBackspace(int ch) {
+  return ch == KEY_BACKSPACE or ch == KEY_DC or ch == 127;
+}
+
+bool IsEnter(int ch) { return ch == '\n'; }
+
 Strings GetStrings(const std::vector<std::string>& train_selection) {
   Strings ret;
 
@@ -31,7 +37,7 @@ Trainer::Trainer(WordEngine word_engine)
     : word_engine_(std::move(word_engine)) {}
 
 void Trainer::Run(TrainParameters train_parameters) const {
-  auto train_selection = word_engine_.get(train_parameters.n_words);
+  auto train_selection = word_engine_.Get(train_parameters.n_words);
 
   Strings strings = GetStrings(train_selection);
 
@@ -42,20 +48,18 @@ void Trainer::Run(TrainParameters train_parameters) const {
 
   for (;;) {
     auto input_char = interator->GetInputChar();
-    if (input_char == '\n') {
+    if (IsEnter(input_char)) {
       break;
     }
-    if (input_char == KEY_BACKSPACE || input_char == KEY_DC ||
-        input_char == 127) {
+    if (IsBackspace(input_char)) {
       interator->MoveBackward();
-      auto char_to_restore = interator->GetCurrentChar();
-      interator->SetCurrentChar(char_to_restore);
+      interator->MarkCorrect();
       continue;
     }
 
     auto current_char = interator->GetCurrentChar();
     if (current_char != input_char) {
-      interator->SetCurrentChar(current_char | A_BOLD | COLOR_PAIR(1));
+      interator->MarkUncorrect();
     }
 
     if (!interator->MoveForward()) {

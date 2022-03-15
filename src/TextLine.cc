@@ -2,55 +2,78 @@
 
 #include <algorithm>
 
-#include "StandardScreen.h"
+#include "NcursesMode.h"
 
-Position GetTerminalSize(StandardScreen::window_t* window) {
+Position GetTerminalSize(WINDOW* window) {
   Position ret;
   getmaxyx(window, ret.y, ret.x);
   return ret;
 }
 
 void PrintStringAt(const std::string& str, Position pos) {
-  mvwprintw(GetWindow(), pos.y, pos.x, "%s", str.c_str());
+  mvwprintw(NCursesMode::GetWindow(), pos.y, pos.x, "%s", str.c_str());
 }
 
 TextLine::TextLine(StringsIterator beg, StringsIterator end)
     : beg_(beg), end_(end), current_(beg_) {
-  max_cols = std::max_element(beg_, end_, [](const auto& lhs, const auto& rhs) {
-               return lhs.size() < rhs.size();
-             })->size();
-  max_rows = 3;
+  max_cols_ =
+      std::max_element(beg_, end_, [](const auto& lhs, const auto& rhs) {
+        return lhs.size() < rhs.size();
+      })->size();
+  max_rows_ = 3;
+}
+
+std::pair<StringsIterator, StringsIterator>
+TextLine::GetBeginAndEndOfStringsToShow() {
+  StringsIterator beg;
+  StringsIterator end;
+  if (current_ == beg_) {
+    beg = current_;
+    end = current_ + 2;
+  } else {
+    beg = current_ - 1;
+    end = current_ + 2;
+  }
+  return {beg, end};
+}
+
+Position TextLine::GetStartingPositionOfStringToBePrintedOn() {
+  Position ret;
+  auto max = GetTerminalSize(NCursesMode::GetWindow());
+  if (current_ == beg_) {
+    ret = {(max.x - max_cols_) / 2, (max.y - max_rows_) / 2 + 1};
+  } else {
+    ret = {(max.x - max_cols_) / 2, (max.y - max_rows_) / 2};
+  }
+  return ret;
+}
+
+void TextLine::UpdateCurrentPosition(Position pos) {
+  if (current_ == beg_) {
+    current_cursor_position_ = pos;
+  } else {
+    current_cursor_position_ = pos;
+    ++current_cursor_position_.y;
+  }
 }
 
 void TextLine::RedrawLine() {
-  auto window = GetWindow();
+  auto window = NCursesMode::GetWindow();
   wclear(window);
-  auto max = GetTerminalSize(window);
-  StringsIterator beg;
-  StringsIterator end;
-  Position start;
-  if (current_ == beg_) {
-    start = {(max.x - max_cols) / 2, (max.y - max_rows) / 2 + 1};
-    beg = current_;
-    end = current_ + 2;
-    current_cursor_position_ = start;
-  } else {
-    start = {(max.x - max_cols) / 2, (max.y - max_rows) / 2};
-    beg = current_ - 1;
-    end = current_ + 2;
-    current_cursor_position_ = start;
-    ++current_cursor_position_.y;
-  }
+  auto [beg, end] = GetBeginAndEndOfStringsToShow();
+  auto start = GetStartingPositionOfStringToBePrintedOn();
 
   for (int padding = 0; beg != end and beg != end_; ++padding, ++beg) {
     PrintStringAt(*beg, {start.x, start.y + padding});
   }
+
+  UpdateCurrentPosition(start);
   MoveCursor();
 }
 
 void TextLine::SetCharUnderCursor(int ch) {
-  mvwaddch(GetWindow(), current_cursor_position_.y, current_cursor_position_.x,
-           ch);
+  mvwaddch(NCursesMode::GetWindow(), current_cursor_position_.y,
+           current_cursor_position_.x, ch);
   MoveCursor();
 }
 
@@ -73,8 +96,9 @@ void TextLine::MoveCursorLeftBy(int n) {
 }
 
 void TextLine::MoveCursor() {
-  wmove(GetWindow(), current_cursor_position_.y, current_cursor_position_.x);
+  wmove(NCursesMode::GetWindow(), current_cursor_position_.y,
+        current_cursor_position_.x);
   Refresh();
 }
 
-void TextLine::Refresh() { wrefresh(GetWindow()); }
+void TextLine::Refresh() { wrefresh(NCursesMode::GetWindow()); }

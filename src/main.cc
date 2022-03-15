@@ -2,8 +2,22 @@
 
 #include "Arguments.h"
 #include "Interactor.h"
-#include "StandardScreen.h"
+#include "NcursesMode.h"
 #include "Trainer.h"
+
+struct AppParameters {
+  std::string filename;
+  TrainParameters train_parameters;
+};
+
+void StartApp(AppParameters params) {
+  NCursesMode::Start();
+  WordEngine word_engine(params.filename);
+  Trainer trainer(std::move(word_engine));
+  trainer.Run(params.train_parameters);
+
+  NCursesMode::Stop();
+}
 
 int main(int argc, char** argv) {
   Arguments args(argc, argv);
@@ -27,10 +41,7 @@ int main(int argc, char** argv) {
     return 1;
   }
 
-  StandardScreen::StartNcursesMode();
-  WordEngine word_engine(*filename);
-  Trainer trainer(std::move(word_engine));
-  trainer.Run({*n_words});
+  StartApp(AppParameters{std::move(*filename), {*n_words}});
 
   return 0;
 }

@@ -28,13 +28,17 @@ class TextLine {
   void MoveCursor();
   void Refresh();
 
+  std::pair<StringsIterator, StringsIterator> GetBeginAndEndOfStringsToShow();
+  Position GetStartingPositionOfStringToBePrintedOn();
+  void UpdateCurrentPosition(Position pos);
+
  private:
   StringsIterator beg_;
   StringsIterator end_;
   StringsIterator current_;
   Position current_cursor_position_;
-  int max_cols;
-  int max_rows;
+  int max_cols_;
+  int max_rows_;
 };
 
 #endif  // PDTT_TEXTLINE_H_

@@ -11,7 +11,7 @@ class WordEngine final {
 
   WordEngine(const std::string& filename);
 
-  std::vector<std::string> get(int n) const;
+  store_t Get(int n) const;
 
  private:
   store_t store_;

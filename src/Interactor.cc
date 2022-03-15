@@ -2,10 +2,10 @@
 
 #include <algorithm>
 
+#include "NcursesMode.h"
 #include "Position.h"
-#include "StandardScreen.h"
 
-int ReadChar() { return getch(); }
+int ReadChar() { return wgetch(NCursesMode::GetWindow()); }
 
 std::optional<Interactor> Interactor::Create(Strings strings) {
   if (strings.empty()) {
@@ -30,7 +30,12 @@ int Interactor::GetInputChar() const { return ReadChar(); }
 
 int Interactor::GetCurrentChar() { return *iterators_.str_i; }
 
-void Interactor::SetCurrentChar(int ch) { text_line_.SetCharUnderCursor(ch); }
+void Interactor::MarkCorrect() {
+  text_line_.SetCharUnderCursor(GetCurrentChar());
+}
+void Interactor::MarkUncorrect() {
+  text_line_.SetCharUnderCursor(GetCurrentChar() | A_BOLD | COLOR_PAIR(1));
+}
 
 bool Interactor::MoveForward() { return IncrementStrI(); }
 
@@ -51,6 +56,7 @@ bool Interactor::DecrementStrI() {
   if (iterators_.str_i == iterators_.vec_i->cbegin()) {
     if (!DecrementVecI()) return false;
     iterators_.str_i = iterators_.vec_i->cend() - 1;
+    text_line_.MoveCursorRightBy(iterators_.vec_i->size() - 1);
   } else {
     --iterators_.str_i;
     text_line_.MoveCursorLeftBy(1);
@@ -71,6 +77,5 @@ bool Interactor::DecrementVecI() {
   --iterators_.vec_i;
   text_line_.DecrementLine();
   text_line_.RedrawLine();
-  text_line_.MoveCursorRightBy(iterators_.vec_i->size() - 1);
   return true;
 }

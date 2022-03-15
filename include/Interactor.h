@@ -19,7 +19,8 @@ class Interactor final {
   int GetInputChar() const;
   int GetCurrentChar();
 
-  void SetCurrentChar(int ch);
+  void MarkUncorrect();
+  void MarkCorrect();
 
   bool MoveForward();
   bool MoveBackward();

@@ -5,7 +5,7 @@
 #include <iostream>
 #include <random>
 
-std::ifstream handled_open(const std::string& filename) {
+std::ifstream HandledOpen(const std::string& filename) {
   std::ifstream fin(filename.c_str());
   if (!fin.is_open()) {
     std::cerr << "Something wrong with opening '" << filename
@@ -15,7 +15,7 @@ std::ifstream handled_open(const std::string& filename) {
   return fin;
 }
 
-size_t count_lines(std::ifstream& fin) {
+size_t CountLines(std::ifstream& fin) {
   auto pos = fin.tellg();
   auto ret = std::count(std::istreambuf_iterator<char>(fin),
                         std::istreambuf_iterator<char>(), '\n');
@@ -25,8 +25,8 @@ size_t count_lines(std::ifstream& fin) {
 }
 
 WordEngine::WordEngine(const std::string& filename) {
-  auto fin = handled_open(filename);
-  auto lines = count_lines(fin);
+  auto fin = HandledOpen(filename);
+  auto lines = CountLines(fin);
 
   std::generate_n(std::back_inserter(store_), lines, [&fin] {
     std::string str;
@@ -37,7 +37,7 @@ WordEngine::WordEngine(const std::string& filename) {
   fin.close();
 }
 
-std::vector<std::string> WordEngine::get(int n) const {
+WordEngine::store_t WordEngine::Get(int n) const {
   std::vector<std::string> ret;
   std::sample(store_.cbegin(), store_.cend(), std::back_inserter(ret), n,
               std::mt19937{std::random_device{}()});
