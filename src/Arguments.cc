@@ -20,6 +20,6 @@ std::string Arguments::GetHelp() {
          "newlines.\n"
          "                              Go get one from "
          "https://github.com/first20hours/google-10000-english.\n"
-         "  -n, --nwords <N>            Count of words to show. Taken words "
-         "are shuffled.\n";
+         "  -n, --nwords   <N>          Number of words to train on. Taken "
+         "words are shuffled.\n";
 }
