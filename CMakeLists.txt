@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.18)
 project(pdtt)
 
 include(cmake/CompileOptions.cmake)
+include(cmake/Debug.cmake)
 include(cmake/Libraries.cmake)
 include(cmake/Sanitizers.cmake)
 include(cmake/Config.cmake)
