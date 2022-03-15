@@ -1,6 +1,7 @@
 #include "StandardScreen.h"
 
-StandardScreen::StandardScreen() : window_(initscr()) {
+void StandardScreen::init() {
+  window_ = initscr();
   cbreak();
   noecho();
   start_color();
@@ -15,6 +16,8 @@ StandardScreen::~StandardScreen() {
 }
 
 StandardScreen StandardScreen::single_instance;
+
+void StandardScreen::StartNcursesMode() { single_instance.init(); }
 
 StandardScreen& StandardScreen::instance() { return single_instance; }
 

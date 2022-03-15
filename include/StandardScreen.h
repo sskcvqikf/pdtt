@@ -18,15 +18,16 @@ class StandardScreen final {
 
   window_t& window() const noexcept;
 
+  static void StartNcursesMode();
   static StandardScreen& instance();
 
  private:
-  StandardScreen();
+  void init();
+  StandardScreen() = default;
   ~StandardScreen();
 
-  window_t* window_;
-
   static StandardScreen single_instance;
+  window_t* window_ = nullptr;
 };
 
 StandardScreen::window_t* GetWindow();
